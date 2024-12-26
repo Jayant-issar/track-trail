@@ -31,32 +31,36 @@ export const EditStatusDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="bg-gray-800 border-gray-700">
         <DialogHeader>
-          <DialogTitle>Update Application Status</DialogTitle>
+          <DialogTitle className="text-gray-200">Update Application Status</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <p className="text-sm font-medium mb-2">Current Status:</p>
+            <p className="text-sm font-medium mb-2 text-gray-300">Current Status:</p>
             <Select
               defaultValue={application.status}
               onValueChange={(value: Application["status"]) =>
                 onUpdate(application.id, value)
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="bg-gray-700 border-gray-600 text-gray-200">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="waiting">Waiting</SelectItem>
-                <SelectItem value="interviewing">Interviewing</SelectItem>
-                <SelectItem value="accepted">Accepted</SelectItem>
-                <SelectItem value="rejected">Rejected</SelectItem>
-                <SelectItem value="ghosting">No Response</SelectItem>
+              <SelectContent className="bg-gray-700 border-gray-600">
+                <SelectItem value="waiting" className="text-gray-200">Waiting</SelectItem>
+                <SelectItem value="interviewing" className="text-gray-200">Interviewing</SelectItem>
+                <SelectItem value="accepted" className="text-gray-200">Accepted</SelectItem>
+                <SelectItem value="rejected" className="text-gray-200">Rejected</SelectItem>
+                <SelectItem value="ghosting" className="text-gray-200">No Response</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <Button variant="outline" onClick={onClose}>
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="bg-gray-700 border-gray-600 text-gray-200 hover:bg-gray-600"
+          >
             Cancel
           </Button>
         </div>
