@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { ApplicationForm } from "@/components/ApplicationForm";
 import { ApplicationStatusBadge } from "@/components/ApplicationStatusBadge";
