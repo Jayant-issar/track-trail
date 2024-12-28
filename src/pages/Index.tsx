@@ -22,9 +22,7 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Mail, Send } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Index = () => {
@@ -73,34 +71,15 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100">
       <div className="container mx-auto py-8 space-y-8">
-        <div className="flex flex-col gap-4">
-          <NavigationMenu className="max-w-full w-full justify-start bg-gray-800/50 p-2 rounded-lg border border-gray-700">
-            <NavigationMenuList className="w-full justify-start gap-4">
-              <NavigationMenuItem>
-                <Link
-                  to="#applications"
-                  className={navigationMenuTriggerStyle() + " gap-2"}
-                >
-                  <Send className="h-4 w-4" />
-                  <span>Applications</span>
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link
-                  to="#cold-emails"
-                  className={navigationMenuTriggerStyle() + " gap-2"}
-                >
-                  <Mail className="h-4 w-4" />
-                  <span>Cold Emails</span>
-                </Link>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Application Tracker
-          </h1>
-        </div>
+        <NavigationMenu className="max-w-full w-full justify-between bg-gray-800/50 p-4 rounded-lg border border-gray-700">
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Application Tracker
+              </span>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
 
         <Tabs defaultValue="applications" className="w-full">
           <TabsList className="grid w-full grid-cols-2 bg-gray-800/50 border border-gray-700">
