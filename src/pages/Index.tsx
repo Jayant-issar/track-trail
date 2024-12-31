@@ -24,6 +24,7 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
+import { PreparationTracker } from "@/components/PreparationTracker";
 
 const Index = () => {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -82,7 +83,7 @@ const Index = () => {
         </NavigationMenu>
 
         <Tabs defaultValue="applications" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-800/50 border border-gray-700">
+          <TabsList className="grid w-full grid-cols-3 bg-gray-800/50 border border-gray-700">
             <TabsTrigger
               value="applications"
               className="data-[state=active]:bg-gray-700/50"
@@ -94,6 +95,12 @@ const Index = () => {
               className="data-[state=active]:bg-gray-700/50"
             >
               Cold Emails
+            </TabsTrigger>
+            <TabsTrigger
+              value="preparation"
+              className="data-[state=active]:bg-gray-700/50"
+            >
+              Preparation
             </TabsTrigger>
           </TabsList>
 
@@ -125,6 +132,10 @@ const Index = () => {
 
           <TabsContent value="cold-emails" className="space-y-4">
             <ColdEmailForm />
+          </TabsContent>
+
+          <TabsContent value="preparation" className="space-y-4">
+            <PreparationTracker />
           </TabsContent>
         </Tabs>
 
