@@ -5,6 +5,12 @@ import { ColdApproach } from "@/types/coldApproach";
 import { ColdApproachForm } from "./ColdApproachForm";
 import { ColdApproachList } from "./ColdApproachList";
 import { Plus } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export const ColdEmailForm = () => {
   const { toast } = useToast();
@@ -49,17 +55,22 @@ export const ColdEmailForm = () => {
         </Button>
       </div>
 
-      {showForm ? (
-        <ColdApproachForm
-          onSubmit={handleSubmit}
-          onCancel={() => setShowForm(false)}
-        />
-      ) : (
-        <ColdApproachList
-          approaches={approaches}
-          onStatusUpdate={updateApproachStatus}
-        />
-      )}
+      <Dialog open={showForm} onOpenChange={setShowForm}>
+        <DialogContent className="bg-gray-800 border-gray-700">
+          <DialogHeader>
+            <DialogTitle className="text-gray-200">New Cold Approach</DialogTitle>
+          </DialogHeader>
+          <ColdApproachForm
+            onSubmit={handleSubmit}
+            onCancel={() => setShowForm(false)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <ColdApproachList
+        approaches={approaches}
+        onStatusUpdate={updateApproachStatus}
+      />
     </div>
   );
 };
