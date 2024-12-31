@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Application {
+  id           String           @id @default(uuid())
+  companyName  String
+  position     String
+  status       ApplicationStatus
+  method       ApplicationMethod
+  appliedDate  DateTime
+  lastUpdated  DateTime         @updatedAt
+  notes        String?
+  contactEmail String?
+  contactName  String?
+  createdAt    DateTime         @default(now())
+}
+
+enum ApplicationStatus {
+  accepted
+  waiting
+  ghosting
+  rejected
+  interviewing
+}
+
+enum ApplicationMethod {
+  email
+  website
+  linkedin
+  referral
+  other
+}
+
+model ColdApproach {
+  id             String             @id @default(uuid())
+  type           ColdApproachType
+  recipientName  String
+  company        String
+  content        String
+  subject        String?
+  recipientEmail String?
+  linkedinProfile String?
+  status         ColdApproachStatus @default(unseen)
+  sentDate       DateTime
+  createdAt      DateTime           @default(now())
+}
+
+enum ColdApproachType {
+  email
+  message
+  linkedin_dm
+}
+
+enum ColdApproachStatus {
+  unseen
+  ghosted
+  rejected
+  waiting
+  replied
+}
+
+model PreparationMetric {
+  id          String       @id @default(uuid())
+  name        String
+  targetValue Float
+  unitLabel   String
+  progress    Progress[]
+  createdAt   DateTime     @default(now())
+}
+
+model Progress {
+  id         String            @id @default(uuid())
+  metricId   String
+  metric     PreparationMetric @relation(fields: [metricId], references: [id])
+  achieved   Float
+  date       DateTime
+  createdAt  DateTime          @default(now())
+}
