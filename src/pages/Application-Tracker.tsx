@@ -25,8 +25,10 @@ import {
 import { Link } from "react-router-dom";
 import { PreparationTracker } from "@/components/PreparationTracker";
 
-const Index = () => {
-  const [applications, setApplications] = useState<Application[]>([]);
+type Props = {}
+
+const ApplicationTracker = (props: Props) => {
+    const [applications, setApplications] = useState<Application[]>([]);
   const [selectedApp, setSelectedApp] = useState<Application | null>(null);
 
   const handleAddApplication = (
@@ -81,29 +83,8 @@ const Index = () => {
           </NavigationMenuList>
         </NavigationMenu>
 
-        <Tabs defaultValue="applications" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-gray-800/50 border border-gray-700">
-            <TabsTrigger
-              value="applications"
-              className="data-[state=active]:bg-gray-700/50"
-            >
-              Applications
-            </TabsTrigger>
-            <TabsTrigger
-              value="cold-emails"
-              className="data-[state=active]:bg-gray-700/50"
-            >
-              Cold Emails
-            </TabsTrigger>
-            <TabsTrigger
-              value="preparation"
-              className="data-[state=active]:bg-gray-700/50"
-            >
-              Preparation
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="applications" className="space-y-8">
+        <div className="w-full ">
+          <div  className="space-y-8 ">
             <ApplicationStats stats={stats} />
             <div className="flex justify-end">
               <Dialog>
@@ -127,16 +108,10 @@ const Index = () => {
               applications={applications}
               onStatusEdit={setSelectedApp}
             />
-          </TabsContent>
+          </div>
 
-          <TabsContent value="cold-emails" className="space-y-4">
-            <ColdEmailForm />
-          </TabsContent>
-
-          <TabsContent value="preparation" className="space-y-4">
-            <PreparationTracker />
-          </TabsContent>
-        </Tabs>
+          
+        </div>
 
         <EditStatusDialog
           isOpen={!!selectedApp}
@@ -147,6 +122,6 @@ const Index = () => {
       </div>
     </div>
   );
-};
+}
 
-export default Index;
+export default ApplicationTracker
