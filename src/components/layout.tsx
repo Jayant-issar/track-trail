@@ -162,14 +162,8 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
             "hover:bg-[#151823] group mt-4",
             "border border-transparent hover:border-purple-500/20"
           )}>
-            <UserButton 
-              appearance={{
-                elements: {
-                  rootBox: "w-full",
-                  userButtonBox: "w-full",
-                  userButtonTrigger: "w-full",
-                }
-              }}
+            <p className=" text-gray-400">Your Profile</p>
+            <UserButton
             /> 
           </div>
         </nav>
