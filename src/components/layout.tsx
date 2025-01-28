@@ -4,6 +4,7 @@ import { Home, Droplet, Hospital, Menu, HeartPulse, Ambulance, HeartIcon, TrainT
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { UserButton, useUser } from "@clerk/clerk-react";
+import { onBoardingMiddleware } from "@/middlewares/globalMiddleware";
 
 interface NavItem {
   icon: React.ElementType;
@@ -31,21 +32,38 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const publicRoutes = ['/login', '/register', '/'];
-      const currentPath = window.location.pathname;
+      const authRoutes = ['/login', '/register'];
+      const currentPath = location.pathname;
+      console.log(currentPath);
       
-      if (user.isSignedIn && publicRoutes.includes(currentPath)) {
-        if (currentPath !== "/") {
-          navigate('/dashboard');
+      //check if user is signed in and trying to access auth routes that is not allowed
+      if(user.isSignedIn && authRoutes.includes(currentPath)){
+        navigate('/dashboard');
+        return;
+      }
+
+      //check if the user is not signed in and trying to access non auth routes that is not allowed to use without signing in
+      if(!user.isSignedIn && !authRoutes.includes(currentPath)){
+        if(currentPath !== '/'){
+          navigate('/login');
         }
+        return;
       }
-      
-      if (!user.isSignedIn && !publicRoutes.includes(currentPath)) {
-        navigate('/login');
+
+      //trying to see if the user is onboarded and if onboardeing the user
+      if(user.isSignedIn && currentPath !== '/' && currentPath !== '/login' && currentPath !== '/register'){
+        const onboardedUser = await onBoardingMiddleware(user.user?.id,user.user?.fullName,user.user?.emailAddresses[0].emailAddress)
+        if(!onboardedUser.success){
+          alert("There was an error onboarding you. Please try again later.")
+          navigate('/');
+        }
+        
       }
+
     };
     
     checkAuth();
+    
   }, [user.isSignedIn, navigate]);
 
   if (isLandingPage) {

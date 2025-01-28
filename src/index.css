@@ -88,6 +88,37 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  * {
+    @apply border-border;
+    scrollbar-color: #b666d2 #151823;
+    scrollbar-width: thin;
+  }
+
+  /* For WebKit browsers */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #151823;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #b666d2, #e052a0);
+    border-radius: 10px;
+    border: 2px solid #151823;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #c47ad4, #e567ab);
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 .color-white {

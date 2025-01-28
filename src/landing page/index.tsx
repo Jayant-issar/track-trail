@@ -3,17 +3,20 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Target, ArrowRight, Briefcase, Send, BarChart3, CheckCircle, Users, Globe, ChevronDown } from "lucide-react"
-import Hyperspeed from "@/components/Hyperspeed/Hyperspeed"
 import { HeroSection } from "@/components/landing-page/HeroSection"
+import { IntegrationShowcase } from "@/components/landing-page/IntegrationShowcase"
+import { debounce } from "lodash"
+import React from "react"
 
 export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [activeTestimonial, setActiveTestimonial] = useState(0)
 
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = debounce(() => {
       setIsScrolled(window.scrollY > 20)
-    }
+    }, 50)
+
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
@@ -78,65 +81,6 @@ export default function LandingPage() {
       <main className="container mx-auto px-6 pt-32 pb-20">
         {/* Hero Section */}
         <HeroSection />
-        {/* <div className="text-center w-full border-2 mx-auto ">
-          <div>
-            <Hyperspeed />
-          </div>
-          
-          <motion.div
-            className="inline-block mb-3 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#b666d2]/10 to-[#e052a0]/10 border border-purple-500/20"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <span className="text-sm font-medium bg-gradient-to-r from-[#b666d2] to-[#e052a0] bg-clip-text text-transparent">
-              Track Your Career Journey
-            </span>
-          </motion.div>
-          <motion.h1
-            className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            Streamline Your
-            <span className="bg-gradient-to-r from-[#b666d2] to-[#e052a0] bg-clip-text text-transparent">
-              {" "}
-              Job Search
-            </span>
-          </motion.h1>
-          <motion.p
-            className="text-lg text-gray-400 mb-12 max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            Take control of your career path with our comprehensive application tracking system. Monitor applications,
-            manage outreach, and track your success metrics in one place.
-          </motion.p>
-          <motion.div
-            className="flex flex-col sm:flex-row justify-center gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
-            <motion.button
-              className="group bg-gradient-to-r from-[#b666d2] to-[#e052a0] text-white px-8 py-3.5 rounded-lg flex items-center justify-center space-x-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20 font-medium"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span>Launch Dashboard</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </motion.button>
-            <motion.button
-              className="bg-[#1c1f2e] border border-purple-500/20 text-white px-8 py-3.5 rounded-lg hover:bg-[#1f2235] transition-all duration-300 font-medium"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Watch Demo
-            </motion.button>
-          </motion.div>
-        </div> */}
 
         {/* Dashboard Preview Section */}
         <motion.div
@@ -147,7 +91,13 @@ export default function LandingPage() {
         >
           <div className="absolute inset-0 bg-gradient-to-t from-[#151823] via-transparent to-transparent z-10"></div>
           <div className="relative z-0 rounded-xl overflow-hidden shadow-2xl border border-purple-500/20 bg-[#1c1f2e]">
-            <img src="/dashboard.png" alt="Track-Trail Dashboard Preview" className="w-full h-auto opacity-75" />
+            <img 
+              src="/dashboard.png" 
+              alt="Dashboard Preview" 
+              className="w-full h-auto opacity-75"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </motion.div>
 
@@ -260,6 +210,9 @@ export default function LandingPage() {
           </div>
         </div>
 
+        {/* Integration Showcase
+        <IntegrationShowcase /> */}
+
         {/* Pricing Section */}
         <div id="pricing" className="mt-32">
           <motion.h2
@@ -356,7 +309,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   )
 }
 
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+const FeatureCard = React.memo(({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => {
   return (
     <motion.div
       className="bg-[#1c1f2e] p-8 rounded-xl hover:transform hover:scale-102 transition-all duration-300 border border-purple-500/20 hover:border-purple-500/40 group"
@@ -368,7 +321,7 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
       <p className="text-gray-400">{description}</p>
     </motion.div>
   )
-}
+})
 
 function StatCard({ number, label }: { number: string; label: string }) {
   return (

@@ -1,0 +1,8 @@
+In this project, use the following rules:
+
+1. About the project:
+- This project is productivity tool for people who are looking for jobs and internships, it is solving the problem of people not being aware of thier current progress in the job search process, for example, they might not know that they have applied to 100 jobs, or they might not know that they have 3 interviews coming up, people make a resolultion to learn a skill but dont do it, and they have no idea how are lgging behind, this platform will help people in being aware of thier current progress and help them in being more productive, by tracking their progress and providing them with analytics and insights, it will help them in being more productive and achieving thier goals, it will also allow them to collaborate and learn with thier fellow peers.
+
+2. About the code:
+ - the code should be clean, maintainable and highly sclable, it should be optimized so it can work on mobile devices, and it should be optimized for performance, it should be optimized for SEO, and it should be optimized for accessibility. The frontend code should be highly responsive and should be optimized for performance, the backend code should have a good architecture and should be optimized for performance, the database should be optimized for performance and should be scalable, the code should be well documented and should be easy to understand and maintain.
+ 

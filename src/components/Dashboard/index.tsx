@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { 
   BarChart3, 
   Mail, 
@@ -19,6 +19,8 @@ import {
   getUpcomingInterviews,
   getInspirationQuote
 } from '../../lib/utils';
+import { onBoardingMiddleware } from '@/middlewares/globalMiddleware';
+import { useUser } from '@clerk/clerk-react';
 
 const Dashboard = () => {
   const progressSummary = getProgressSummary();
@@ -27,7 +29,7 @@ const Dashboard = () => {
   const skillMetrics = getSkillMetrics();
   const interviews = getUpcomingInterviews();
   const inspiration = getInspirationQuote();
-
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 p-6">
       {/* Progress Summary */}
