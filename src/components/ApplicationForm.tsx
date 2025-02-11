@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Application, ApplicationMethod, ApplicationStatus } from "@/types/application";
 import { useToast } from "@/hooks/use-toast";
+import { createApplication } from "@/actions/applicationTracker";
 
 interface Props {
   onSubmit: (application: Omit<Application, "id" | "lastUpdated">) => void;
@@ -30,13 +31,11 @@ export const ApplicationForm = ({ onSubmit }: Props) => {
     contactName: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
-    toast({
-      title: "Application Added",
-      description: "Your application has been successfully tracked!",
-    });
+    
+    
     setFormData({
       companyName: "",
       position: "",

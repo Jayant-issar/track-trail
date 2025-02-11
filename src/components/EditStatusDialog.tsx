@@ -30,12 +30,12 @@ export const EditStatusDialog = ({
   if (!application) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={onClose} >
       <DialogContent className="bg-gray-800 border-gray-700">
         <DialogHeader>
           <DialogTitle className="text-gray-200">Update Application Status</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 border-2 border-red-500">
           <div>
             <p className="text-sm font-medium mb-2 text-gray-300">Current Status:</p>
             <Select

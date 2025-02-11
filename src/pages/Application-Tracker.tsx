@@ -1,7 +1,7 @@
 import { useState } from "react";
+import { useAuth } from "@clerk/clerk-react";
 
 import { ApplicationForm } from "@/components/ApplicationForm";
-
 import { Application } from "@/types/application";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,35 +11,55 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ColdEmailForm } from "@/components/ColdEmailForm";
-import { EditStatusDialog } from "@/components/EditStatusDialog";
 import { ApplicationStats } from "@/components/ApplicationStats";
 import { ApplicationTable } from "@/components/ApplicationTable";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu";
-import { Link } from "react-router-dom";
-import { PreparationTracker } from "@/components/PreparationTracker";
+import { NavigationMenu, NavigationMenuList, NavigationMenuItem } from "@/components/ui/navigation-menu";
+import { createApplication } from "@/actions/applicationTracker";
+import { toast } from "@/hooks/use-toast";
+import { EditStatusDialog } from "@/components/EditStatusDialog";
 
 type Props = {}
 
 const ApplicationTracker = (props: Props) => {
-    const [applications, setApplications] = useState<Application[]>([]);
+  const { getToken } = useAuth(); // Move useAuth hook inside the component
+  const [applications, setApplications] = useState<Application[]>([]);
   const [selectedApp, setSelectedApp] = useState<Application | null>(null);
 
-  const handleAddApplication = (
+  const handleAddApplication = async (
     newApp: Omit<Application, "id" | "lastUpdated">
   ) => {
-    const application: Application = {
-      ...newApp,
-      id: crypto.randomUUID(),
-      lastUpdated: new Date().toISOString(),
-    };
-    setApplications([application, ...applications]);
+    try {
+      const token = await getToken();
+      const {data, error} = await createApplication(newApp, token);
+      
+      if(error){
+        toast({
+          title: "Error",
+          description: "Failed to add application",
+        });
+        return;
+      }
+      
+      if(data){
+        toast({
+          title: "Application Added",
+          description: "Your application has been successfully tracked!",
+        });
+        
+        const application: Application = {
+          ...newApp,
+          id: crypto.randomUUID(),
+          lastUpdated: new Date().toISOString(),
+        };
+        
+        setApplications([application, ...applications]);
+      }
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to add application",
+      });
+    }
   };
 
   const handleUpdateStatus = (id: string, newStatus: Application["status"]) => {
@@ -55,19 +75,15 @@ const ApplicationTracker = (props: Props) => {
 
   const stats = {
     total: applications.length,
-    interviewing: applications.filter((app) => app.status === "interviewing")
-      .length,
+    interviewing: applications.filter((app) => app.status === "interviewing").length,
     accepted: applications.filter((app) => app.status === "accepted").length,
-    response_rate:
-      applications.length > 0
-        ? Math.round(
-            ((applications.filter(
-              (app) => app.status !== "ghosting" && app.status !== "waiting"
-            ).length /
-              applications.length) *
-              100)
-          )
-        : 0,
+    response_rate: applications.length > 0
+      ? Math.round(
+          ((applications.filter(
+            (app) => app.status !== "ghosting" && app.status !== "waiting"
+          ).length / applications.length) * 100)
+        )
+      : 0,
   };
 
   return (
@@ -83,8 +99,8 @@ const ApplicationTracker = (props: Props) => {
           </NavigationMenuList>
         </NavigationMenu>
 
-        <div className="w-full ">
-          <div  className="space-y-8 ">
+        <div className="w-full">
+          <div className="space-y-8">
             <ApplicationStats stats={stats} />
             <div className="flex justify-end">
               <Dialog>
@@ -109,8 +125,6 @@ const ApplicationTracker = (props: Props) => {
               onStatusEdit={setSelectedApp}
             />
           </div>
-
-          
         </div>
 
         <EditStatusDialog
@@ -124,4 +138,4 @@ const ApplicationTracker = (props: Props) => {
   );
 }
 
-export default ApplicationTracker
+export default ApplicationTracker;

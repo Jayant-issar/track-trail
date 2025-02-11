@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Home, Droplet, Hospital, Menu, HeartPulse, Ambulance, HeartIcon, TrainTrack, Target, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { UserButton, useUser } from "@clerk/clerk-react";
+import { useAuth, UserButton, useUser, } from "@clerk/clerk-react";
 import { onBoardingMiddleware } from "@/middlewares/globalMiddleware";
 
 interface NavItem {
@@ -29,13 +29,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const isLandingPage = location.pathname === "/";
   const isAuthPage = ['/login', '/register'].includes(location.pathname);
   const shouldShowSidebar = !isLandingPage && !isAuthPage;
-
+  const {getToken} =  useAuth()
   useEffect(() => {
     const checkAuth = async () => {
       const authRoutes = ['/login', '/register'];
       const currentPath = location.pathname;
       console.log(currentPath);
       
+      const token = await getToken();
+      console.log("the token is = ",token);
       //check if user is signed in and trying to access auth routes that is not allowed
       if(user.isSignedIn && authRoutes.includes(currentPath)){
         navigate('/dashboard');

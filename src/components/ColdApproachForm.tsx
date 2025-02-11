@@ -31,6 +31,8 @@ export const ColdApproachForm = ({ onSubmit, onCancel }: Props) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(formData);
+    
     onSubmit({
       type: formData.type,
       recipientName: formData.recipientName,

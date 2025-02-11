@@ -11,25 +11,40 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useAuth } from "@clerk/clerk-react";
+import { createColdOutReach } from "@/actions/coldOutReachTracker";
 
 export const ColdEmailForm = () => {
   const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
   const [approaches, setApproaches] = useState<ColdApproach[]>([]);
+  const {getToken} = useAuth();
+  const handleSubmit = async(formData: Omit<ColdApproach, "id" | "status" | "sentDate">) => {
+    const token = await getToken()
 
-  const handleSubmit = (formData: Omit<ColdApproach, "id" | "status" | "sentDate">) => {
-    const newApproach: ColdApproach = {
-      id: crypto.randomUUID(),
-      ...formData,
-      status: "unseen",
-      sentDate: new Date().toISOString(),
-    };
-    setApproaches([newApproach, ...approaches]);
-    setShowForm(false);
-    toast({
-      title: "Approach Created",
-      description: "Your cold approach has been saved and tracked!",
-    });
+    const {data, error} = await createColdOutReach({...formData, status: "unseen"},token )
+    if(error){
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+    if(data){
+      const newApproach: ColdApproach = {
+        id: crypto.randomUUID(),
+        ...formData,
+        status: "unseen",
+        sentDate: new Date().toISOString(),
+      };
+      setApproaches([newApproach, ...approaches]);
+      setShowForm(false);
+      toast({
+        title: "Approach Created",
+        description: "Your cold approach has been saved and tracked!",
+      });
+    }
+    
   };
 
   const updateApproachStatus = (id: string, newStatus: ColdApproach["status"]) => {
