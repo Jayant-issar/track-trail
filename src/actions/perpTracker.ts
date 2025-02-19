@@ -1,6 +1,7 @@
 import axios from "axios";
 
-import { PreparationMetric } from "@/types/preparationMetric";
+import { PreparationMetric, PreparationMetricDetails } from "@/types/preparationMetric";
+
 
 
 const API_URL = import.meta.env.VITE_PUBLIC_API_URL;
@@ -106,4 +107,72 @@ export const updatePreparationMetric = async (metricId: string, delta: number, t
             }
         }
     }
+}
+
+
+export const getAboutPreparationMetric = async (token:string, metricId:string):
+Promise<ApiResponse<PreparationMetricDetails>> =>{
+    try {
+        const response = await axios({
+            method: "get",
+            url: `${API_URL}/user/prep-tracker/metricDetails?metricId=${metricId}`,
+            timeout:API_TIMEOUT,
+            headers:{
+                Authorization : `Bearer ${token}`
+            }
+        });
+        // console.log(`Metric details fetched: ${JSON.stringify(response.data.data)}`);
+        return {data: response.data.data}
+    } catch (error) {
+        const errorMessage = axios.isAxiosError(error) ? error.response?.data?.message || error.message : "Failed to fetch  metric deatils ";    
+        
+        console.error("Preparation metric error: ", {
+            error:errorMessage,
+        })
+
+        return {    
+            error:{
+                code:"PREPARATION_METRIC_ERROR",
+                message:errorMessage
+            }
+        }
+    }
+}
+
+export const getAiHelpAction = async (
+  data: { context: string; prompt: string }, 
+  token?: string
+): Promise<ApiResponse<{ text: string }>> => {
+  try {
+    const response = await axios({
+      method: 'post',
+      url: `${API_URL}/user/ai/ai-help`,
+      data,
+      timeout: API_TIMEOUT,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    return { 
+      data: {
+        text: response.data.text
+      }
+    };
+    
+  } catch (error) {
+    const errorMessage = axios.isAxiosError(error) 
+      ? error.response?.data?.error?.message || error.message 
+      : "Failed to get AI help";
+      
+    console.error("AI help error", { error: errorMessage });
+
+    return {
+      error: {
+        code: "AI_HELP_ERROR",
+        message: errorMessage
+      }
+    }
+  }
 }
