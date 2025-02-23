@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Application } from "@/types/application";
-import { ColdEmailForm } from "@/components/ColdEmailForm";
+import { ColdEmailForm } from "@/components/coldapproach/ColdEmailForm";
 import { EditStatusDialog } from "@/components/EditStatusDialog";
 
 import {
@@ -9,22 +9,10 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 
+import { useColdOutreachStore } from '@/stores/coldOutreachStore';
 
 const ColdOutReach = () => {
-  const [applications, setApplications] = useState<Application[]>([]);
-  const [selectedApp, setSelectedApp] = useState<Application | null>(null);
-
-
-  const handleUpdateStatus = (id: string, newStatus: Application["status"]) => {
-    setApplications(
-      applications.map((app) =>
-        app.id === id
-          ? { ...app, status: newStatus, lastUpdated: new Date().toISOString() }
-          : app
-      )
-    );
-    setSelectedApp(null);
-  };
+  const { coldOutreaches, setColdOutreaches } = useColdOutreachStore();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100">
@@ -44,12 +32,7 @@ const ColdOutReach = () => {
             <ColdEmailForm />
         </div>
 
-        <EditStatusDialog
-          isOpen={!!selectedApp}
-          application={selectedApp}
-          onClose={() => setSelectedApp(null)}
-          onUpdate={handleUpdateStatus}
-        />
+        
       </div>
     </div>
   );

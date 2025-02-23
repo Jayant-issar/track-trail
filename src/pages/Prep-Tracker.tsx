@@ -6,9 +6,12 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { PreparationTracker } from "@/components/PreparationTracker";
+import { PreparationTracker } from "@/components/preparation-metrics/PreparationTracker";
+import { usePrepTrackerStore } from '@/stores/prepTrackerStore';
 
 const PrepTracker = () => {
+  const { prepMetrics, setPrepMetrics } = usePrepTrackerStore();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100">
       <div className="container mx-auto py-8 space-y-8">

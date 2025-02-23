@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { ApplicationForm } from "@/components/ApplicationForm";
+import { ApplicationForm } from "@/components/application/ApplicationForm";
 
 import { Application } from "@/types/application";
 import { Button } from "@/components/ui/button";
@@ -12,10 +12,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ColdEmailForm } from "@/components/ColdEmailForm";
+import { ColdEmailForm } from "@/components/coldapproach/ColdEmailForm";
 import { EditStatusDialog } from "@/components/EditStatusDialog";
-import { ApplicationStats } from "@/components/ApplicationStats";
-import { ApplicationTable } from "@/components/ApplicationTable";
+import { ApplicationStats } from "@/components/application/ApplicationStats";
+import { ApplicationTable } from "@/components/application/ApplicationTable";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -23,7 +23,7 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
-import { PreparationTracker } from "@/components/PreparationTracker";
+import { PreparationTracker } from "@/components/preparation-metrics/PreparationTracker";
 
 const Index = () => {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -148,5 +148,7 @@ const Index = () => {
     </div>
   );
 };
+
+
 
 export default Index;
