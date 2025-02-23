@@ -7,6 +7,7 @@ import { Chart } from './Chart';
 import {DotLottieReact} from "@lottiefiles/dotlottie-react"
 import { words } from 'lodash';
 import GetAiHelp from './get-ai-help';
+import Notes from './Notes';
 function DetailedMetricPage() {
   // Mock data - in production this would come from your backend
   
@@ -219,13 +220,7 @@ function DetailedMetricPage() {
             </div>
 
             {/* Notes Section */}
-            <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-6">
-              <h2 className="text-xl font-semibold mb-6">Add your notes</h2>
-              <textarea 
-                className="w-full h-32 bg-gray-700/20 border border-gray-700 rounded-lg p-3 text-gray-100 focus:outline-none focus:border-purple-500"
-                placeholder="Add notes about your progress..."
-              />
-            </div>
+            <Notes metricId={preparationData.id} />
           </div>
         </div>
         <HeatMapWrapper value={preparationData.progress.map(p => ({
