@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth, UserButton, useUser, } from "@clerk/clerk-react";
 import { onBoardingMiddleware } from "@/middlewares/globalMiddleware";
+import UpgradeCard from "./ui/sidebar/upgrade-ai";
+import { ROUTE_PATHS, PROTECTED_ROUTES, PUBLIC_ROUTES } from '@/config/routes';
 
 interface NavItem {
   icon: React.ElementType;
@@ -23,58 +25,74 @@ const navItems: NavItem[] = [
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
-  const user = useUser();
+  const { user } = useUser();
   const location = useLocation();
+  const { getToken } = useAuth();
   
-  const isLandingPage = location.pathname === "/";
-  const isAuthPage = ['/login', '/register'].includes(location.pathname);
-  const shouldShowSidebar = !isLandingPage && !isAuthPage;
-  const {getToken} =  useAuth()
+  const isValidRoute = 
+    Object.values(ROUTE_PATHS).some(path => {
+      // Handle dynamic routes with parameters
+      if (path.includes(':')) {
+        const basePath = path.split('/:')[0];
+        return location.pathname.startsWith(basePath);
+      }
+      return location.pathname === path;
+    }) || 
+    location.pathname.startsWith('/prep-tracker/detailed/');
+
+  const isProtectedRoute = PROTECTED_ROUTES.some(route => {
+    if (route.includes(':')) {
+      const baseRoute = route.split('/:')[0];
+      return location.pathname.startsWith(baseRoute);
+    }
+    return location.pathname === route;
+  });
+
+  const isPublicRoute = PUBLIC_ROUTES.includes(location.pathname as any);
+  const shouldShowSidebar = PROTECTED_ROUTES.includes(location.pathname as any);
+
   useEffect(() => {
+
+    
     const checkAuth = async () => {
-      const authRoutes = ['/login', '/register'];
-      const currentPath = location.pathname;
-      console.log(currentPath);
-      
       const token = await getToken();
-      console.log("the token is = ",token);
-      //check if user is signed in and trying to access auth routes that is not allowed
-      if(user.isSignedIn && authRoutes.includes(currentPath)){
-        navigate('/dashboard');
+      console.log(token);
+      
+      // Redirect to home if route doesn't exist
+      if (!isValidRoute) {
+        navigate(ROUTE_PATHS.LANDING);
         return;
       }
 
-      //check if the user is not signed in and trying to access non auth routes that is not allowed to use without signing in
-      if(!user.isSignedIn && !authRoutes.includes(currentPath)){
-        if(currentPath !== '/'){
-          navigate('/login');
-        }
+      // Redirect logic for protected routes
+      if (isProtectedRoute && !token) {
+        navigate(ROUTE_PATHS.LOGIN);
         return;
       }
 
-      //trying to see if the user is onboarded and if onboardeing the user
-      if(user.isSignedIn && currentPath !== '/' && currentPath !== '/login' && currentPath !== '/register'){
-        const onboardedUser = await onBoardingMiddleware(user.user?.id,user.user?.fullName,user.user?.emailAddresses[0].emailAddress)
-        if(!onboardedUser.success){
-          alert("There was an error onboarding you. Please try again later.")
-          navigate('/');
-        }
-        
+      // Redirect away from auth pages if logged in
+      if (isPublicRoute && token && location.pathname !== ROUTE_PATHS.LANDING) {
+        navigate(ROUTE_PATHS.DASHBOARD);
       }
 
+      const Onboarding = await onBoardingMiddleware(user.id,user.fullName,user.primaryEmailAddress.emailAddress)
+      if(!Onboarding) {
+        alert("There was an error while updating you please try again later")
+        navigate(ROUTE_PATHS.LANDING)
+        return
+      }
     };
-    
-    checkAuth();
-    
-  }, [user.isSignedIn, navigate]);
 
-  if (isLandingPage) {
+    checkAuth();
+  }, [location.pathname, getToken, navigate, isValidRoute, isProtectedRoute, isPublicRoute]);
+
+  if (location.pathname === ROUTE_PATHS.LANDING) {
     return <div className="min-h-screen bg-medical-light">{children}</div>;
   }
       
   return (
     <div className="min-h-screen bg-medical-light ">
-      {shouldShowSidebar && (
+      {isProtectedRoute && (
         <Button
           variant="ghost"
           size="icon"
@@ -86,7 +104,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       )}
 
       <div className="flex h-full">
-        {shouldShowSidebar && (
+        {isProtectedRoute && (
           <>
             <div 
               className={cn(
@@ -135,7 +153,7 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
   return (
     <div
       className={cn(
-        "fixed inset-y-0 left-0 z-40 w-64 bg-[#1c1f2e] border-r border-purple-500/20 shadow-lg transform transition-transform duration-300 ease-in-out sm:translate-x-0",
+        " flex flex-col justify-between pb-2  fixed inset-y-0 left-0 z-40 w-64 bg-[#1c1f2e] border-r border-purple-500/20 shadow-lg transform transition-transform duration-300 ease-in-out sm:translate-x-0",
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}
     >
@@ -150,7 +168,7 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
         <nav className="space-y-2 w-full flex flex-col items-center justify-center">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = location.pathname === item.path;
+            const isActive = location.pathname.includes(item.path);
             
             return (
               <button
@@ -188,6 +206,10 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
           </div>
         </nav>
       </div>
+      <div className=" px-4">
+        <UpgradeCard/>
+      </div>
+      
     </div>
   );
 };
