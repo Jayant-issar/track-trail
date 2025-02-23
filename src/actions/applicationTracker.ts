@@ -50,3 +50,35 @@ export const createApplication = async (
   }
 };
 
+export const getApplications = async (token: string): Promise<ApiResponse<Application[]>> => {
+  try {
+    const response = await axios({
+      method: "get",
+      url: `${API_URL}/user/application`,
+      timeout: API_TIMEOUT,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      transformRequest: [(data, headers) => {
+        headers['X-Clock-Tolerance'] = '10';
+        return data;
+      }]
+    });
+
+      console.log('Applications fetched:', response.data.data);
+      return { data: response.data.data };
+    } catch (error) {
+      const errorMessage = axios.isAxiosError(error) ? error.response?.data?.message || error.message : 'Failed to fetch applications';
+      console.error("Application Error:", {
+        error:errorMessage,
+      })
+
+      return {
+        error:{
+          code:"APPLICATION_ERROR",
+          message:errorMessage
+        }
+      }
+    }
+}
+
