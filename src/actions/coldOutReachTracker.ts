@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ColdApproach } from "../types/coldApproach";
+import { ColdApproach, updateColdoutreachType } from "../types/coldApproach";
 
 const API_URL = import.meta.env.VITE_PUBLIC_API_URL;
 const API_TIMEOUT = 10000;
@@ -29,7 +29,6 @@ export const createColdOutReach = async (
       }
     });
 
-    console.log('coldOutReach created:', response.data);
     return { data: response.data };
     
   } catch (error) {
@@ -52,3 +51,63 @@ export const createColdOutReach = async (
   }
 };
 
+
+export const getColdOutReaches = async (token:string): Promise<ApiResponse<ColdApproach[]>> => {
+
+  try {
+    const response = await axios({
+      method: "get",
+      url: `${API_URL}/user/cold-outreach`,
+      timeout: API_TIMEOUT,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+
+    });
+    console.log('ColdOutReaches fetched:', response.data);
+
+    return {data:response.data.data};
+  } catch (error) {
+    const errorMessage = axios.isAxiosError(error) ? error.response?.data?.message || error.message : 'Failed to fetch coldOutReaches';
+    console.error("ColdOutReach Error:", {
+      error:errorMessage,
+    })
+    return {
+      error: {
+        code: 'COLD_OUTREACH_ERROR',
+        message: errorMessage
+      }
+    }
+  }
+}
+
+export const updateColdOutReach = async (
+  token: string,
+  updateData: updateColdoutreachType
+):Promise<ApiResponse<ColdApproach>> => {
+    try {
+      const response = await axios({
+        method:"patch",
+        url:`${API_URL}/user/cold-outreach/update`,
+        timeout:API_TIMEOUT,
+        headers:{
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        data:updateData
+      });
+
+      return {data:response.data.data};
+    } catch (error) {
+      const errorMessage = axios.isAxiosError(error) ? error.response?.data?.message || error.message : 'Failed to update coldOutReach';
+      console.error("ColdOutReach Error:", {
+        error:errorMessage,
+      })
+      return {
+        error: {
+          code: 'COLD_OUTREACH_ERROR',
+          message: errorMessage
+        }
+      }
+    }
+}
