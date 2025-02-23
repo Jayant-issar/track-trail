@@ -13,9 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import { useAuth } from "@clerk/clerk-react";
 import { createColdOutReach, getColdOutReaches } from "@/actions/coldOutReachTracker";
-import { useQuery } from "@tanstack/react-query";
 import { useColdOutreachStore } from "@/stores/coldOutreachStore";
 import { useColdOutreacheQuery } from "@/queries/coldApproachQueries";
+import { useUpdateColdOutreachStatus } from "@/queries/coldApproachQueries";
 
 export const ColdEmailForm = () => {
   const { toast } = useToast();
@@ -23,9 +23,12 @@ export const ColdEmailForm = () => {
   const {data:coldOutreachResponse} = useColdOutreacheQuery();
   const {coldOutreaches,setColdOutreaches} = useColdOutreachStore();
   const {getToken} = useAuth();
+  const updateStatusMutation = useUpdateColdOutreachStatus();
   
   useEffect(()=>{
     if(coldOutreachResponse){
+      console.log("the cold out reach response is ", coldOutreachResponse);
+      
       setColdOutreaches(coldOutreachResponse.data);
     }
   },[coldOutreachResponse]) 
@@ -59,15 +62,7 @@ export const ColdEmailForm = () => {
   };
 
   const updateApproachStatus = (id: string, newStatus: ColdApproach["status"]) => {
-    setColdOutreaches(
-      coldOutreaches.map((approach) =>
-        approach.id === id ? { ...approach, status: newStatus } : approach
-      )
-    );
-    toast({
-      title: "Status Updated",
-      description: "Cold approach status has been updated successfully!",
-    });
+    updateStatusMutation.mutate({ id, newStatus });
   };
 
   return (
