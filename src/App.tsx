@@ -11,8 +11,9 @@ import SignInPage from "./components/auth/Sign-in";
 import Dashboard from "./components/Dashboard";
 import ApplicationTracker from "./pages/Application-Tracker";
 import PrepTracker from "./pages/Prep-Tracker";
-import { ColdApproachForm } from "./components/ColdApproachForm";
 import ColdOutReach from "./pages/Cold-Outreaches";
+import DetailedMetricPage from "./components/preparation-metrics/detailed-metric-page";
+import { ROUTE_PATHS } from '@/config/routes';
 
 const queryClient = new QueryClient();
 
@@ -26,12 +27,13 @@ const App = () => (
         <BrowserRouter>
         <Layout>
           <Routes>
-            <Route path="/login" element={<SignInPage/>} />
-            <Route path="/" element={<LandingPage/>} />
-            <Route path="/dashboard" element={<Dashboard/>} />
-            <Route path="/application-tracker" element={<ApplicationTracker/>} />
-            <Route path="/prep-tracker" element={<PrepTracker/>} />
-            <Route path="/cold-outreaches" element={<ColdOutReach/>} />
+            <Route path={ROUTE_PATHS.LOGIN} element={<SignInPage/>} />
+            <Route path={ROUTE_PATHS.LANDING} element={<LandingPage/>} />
+            <Route path={ROUTE_PATHS.DASHBOARD} element={<Dashboard/>} />
+            <Route path={ROUTE_PATHS.APPLICATION_TRACKER} element={<ApplicationTracker/>} />
+            <Route path={ROUTE_PATHS.PREP_TRACKER} element={<PrepTracker/>} />
+            <Route path={ROUTE_PATHS.PREP_DETAILED} element={<DetailedMetricPage/>} />
+            <Route path={ROUTE_PATHS.COLD_OUTREACHES} element={<ColdOutReach/>} />
           </Routes>
         </Layout>
         </BrowserRouter>
