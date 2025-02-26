@@ -82,3 +82,32 @@ export const getApplications = async (token: string): Promise<ApiResponse<Applic
     }
 }
 
+export const updateApplicationStatus = async (token:string, data:{id:string, status:Application["status"]}):Promise<ApiResponse<Application>> => {
+  try {
+    const response = await axios({
+      method:"patch",
+      url:`${API_URL}/user/application`,
+      data: data,
+      timeout:API_TIMEOUT,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    return {data:response.data.data};
+  } catch (error) {
+    const errorMessage = axios.isAxiosError(error) ? error.response?.data?.message || error.message : 'Failed to update application status';
+    console.error("Application Error:", {
+      error:errorMessage,
+    })
+
+    return {
+      error:{
+        code:"APPLICATION_ERROR",
+        message:errorMessage
+      }
+    }
+  }
+
+}
